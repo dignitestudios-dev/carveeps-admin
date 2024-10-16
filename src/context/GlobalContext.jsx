@@ -8,7 +8,7 @@ export const GlobalContextProvider = ({ children }) => {
   const navigate = useNavigate();
 
   // Sidebar link toggles
-  const baseUrl = "https://dev.api.carveeps.com";
+  const baseUrl = "https://api.carveeps.com";
 
   const [activeLink, setActiveLink] = useState("Dashboard");
   const navigateToLink = (link, name) => {
