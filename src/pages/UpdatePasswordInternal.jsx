@@ -75,7 +75,7 @@ const UpdatePasswordInternal = () => {
     }
   }
   return (
-    <div className="font-[sans-serif] text-[#333]">
+    <div className="font-[sans-serif] p-6 text-[#333]">
       {/* Email Error */}
       {passwordError && (
         <Error error={passwordError} setError={setPasswordError} />

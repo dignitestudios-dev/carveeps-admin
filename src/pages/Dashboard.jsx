@@ -41,7 +41,7 @@ const Dashboard = () => {
     getDashboardData();
   }, []);
   return (
-    <div className="w-full flex flex-col gap-6">
+    <div className="w-full flex flex-col p-6 gap-6">
       <Summary
         dealers={dashboard?.dealershipMonthsData}
         users={dashboard?.usersMonthsData}

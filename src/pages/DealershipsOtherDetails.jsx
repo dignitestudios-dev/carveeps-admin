@@ -4,7 +4,7 @@ import RevenueGraph from "../components/dashboard/dealerships/RevenueGraph";
 
 const DealershipsOtherDetails = () => {
   return (
-    <div className="w-full h-auto flex flex-col justify-start items-start gap-3">
+    <div className="w-full h-auto p-6 flex flex-col justify-start items-start gap-3">
       <div className="w-full h-auto flex flex-col justify-start items-start gap-3">
         <h1 className="ml-1 text-xl font-bold text-black">Revenue</h1>
         <div className="w-full border rounded-xl p-4 h-64">

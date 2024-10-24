@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { MdOutlineChat } from "react-icons/md";
 import { IoAnalytics } from "react-icons/io5";
 import Cookies from "js-cookie";
+import { IoSettingsOutline } from "react-icons/io5";
+import { TbPercentage } from "react-icons/tb";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const sidebarRef = useRef(null);
@@ -65,7 +67,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         <SidebarLink
           title={"Update Password"}
           link={"/update-password"}
-          icon={<MdOutlineChat />}
+          icon={<IoSettingsOutline />}
+        />
+
+        <SidebarLink
+          title={"Commission"}
+          link={"/commission-settings"}
+          icon={<TbPercentage />}
         />
 
         <button

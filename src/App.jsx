@@ -17,6 +17,7 @@ import Transactions from "./pages/Transactions";
 import DealershipsOtherDetails from "./pages/DealershipsOtherDetails";
 import Tickets from "./pages/Tickets";
 import UpdatePasswordInternal from "./pages/UpdatePasswordInternal";
+import CommissionSettings from "./pages/CommissionSettings";
 
 function App() {
   return (
@@ -29,6 +30,10 @@ function App() {
       <Route
         path="/update-password"
         element={<GlobalLayout page={<UpdatePasswordInternal />} />}
+      />
+      <Route
+        path="/commission-settings"
+        element={<GlobalLayout page={<CommissionSettings />} />}
       />
 
       {/* Dashboard pages */}

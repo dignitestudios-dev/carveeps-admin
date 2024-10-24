@@ -3,7 +3,7 @@ import Grid from "../components/dashboard/chat/Grid";
 
 const ChatSupport = () => {
   return (
-    <div>
+    <div className="p-6">
       <Grid />
     </div>
   );

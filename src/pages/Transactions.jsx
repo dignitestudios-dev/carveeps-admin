@@ -2,7 +2,7 @@ import React from "react";
 
 const Transactions = () => {
   return (
-    <div className="w-full h-auto  border rounded-xl flex flex-col py-4 md:py-6">
+    <div className="w-full p-6 h-auto  border rounded-xl flex flex-col py-4 md:py-6">
       <div className="px-6 mb-6 flex justify-between items-center">
         <p className="text-lg font-semibold">Recent Transactions</p>
       </div>

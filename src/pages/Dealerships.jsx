@@ -51,7 +51,7 @@ const Dealerships = () => {
       deal?.email?.toLowerCase().includes(searchInput.toLowerCase())
   );
   return (
-    <div className="w-full flex flex-col justify-start items-start gap-3">
+    <div className="w-full p-6 flex flex-col justify-start items-start gap-3">
       <div className="w-full h-auto flex justify-end items-center">
         <button
           onClick={() => setIsRegisterOpen(true)}

@@ -62,7 +62,7 @@ const Tickets = () => {
   );
 
   return (
-    <div className="w-full h-auto flex flex-col justify-start items-start gap-3">
+    <div className="w-full p-6 h-auto flex flex-col justify-start items-start gap-3">
       <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
         <h1 className="w-auto text-5xl font-bold text-gray-700">Tickets</h1>
 

@@ -42,7 +42,7 @@ const DealersProfile = () => {
     getProfile();
   }, []);
   return profileLoading ? (
-    <div className="w-full flex flex-col justify-start items-start gap-3 animate-pulse">
+    <div className="w-full flex flex-col p-6 justify-start items-start gap-3 animate-pulse">
       {/* Main Container */}
       <div className="w-full h-auto rounded-3xl flex flex-col justify-start items-start bg-white">
         {/* Header and Logo */}

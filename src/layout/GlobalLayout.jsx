@@ -34,7 +34,7 @@ const GlobalLayout = ({ page }) => {
             </div>
           </div> */}
         </div>
-        <div className="w-full p-6">{page}</div>
+        <div className="w-full ">{page}</div>
       </div>
     </div>
   );

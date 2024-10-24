@@ -54,7 +54,7 @@ const Notifications = () => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-start items-start gap-3">
+    <div className="w-full flex flex-col p-6 justify-start items-start gap-3">
       <div className="w-full h-auto flex justify-between items-center">
         <div className="w-96 relative">
           <input
