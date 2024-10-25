@@ -159,8 +159,14 @@ const CommissionSettings = () => {
                 <div className="relative flex items-center">
                   <input
                     name="pass1"
+                    type="tel" // Changed from 'text' to 'tel'
+                    inputMode="numeric"
+                    maxLength={2}
                     value={yearly}
-                    onChange={(e) => setYearly(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, "");
+                      setYearly(value);
+                    }}
                     className="w-full text-sm border border-gray-300 px-4 py-3 rounded-md outline-[#333]"
                     placeholder="Yearly"
                   />
@@ -177,7 +183,13 @@ const CommissionSettings = () => {
                   <input
                     name="pass1"
                     value={biAnnual}
-                    onChange={(e) => setBiAnnual(e.target.value)}
+                    type="tel"
+                    inputMode="numeric"
+                    maxLength={2}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+                      setBiAnnual(value);
+                    }}
                     className="w-full text-sm border border-gray-300 px-4 py-3 rounded-md outline-[#333]"
                     placeholder="Bi-Annual"
                   />
@@ -194,7 +206,13 @@ const CommissionSettings = () => {
                   <input
                     name="pass1"
                     value={monthly}
-                    onChange={(e) => setMonhtly(e.target.value)}
+                    type="tel" // Changed from 'text' to 'tel'
+                    inputMode="numeric"
+                    maxLength={2}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, "");
+                      setMonhtly(value);
+                    }}
                     className="w-full text-sm border border-gray-300 px-4 py-3 rounded-md outline-[#333]"
                     placeholder="Monthly"
                   />
