@@ -122,6 +122,12 @@ const Dealerships = () => {
                 >
                   Total Plans
                 </th>
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4 xl:px-0 py-4 font-medium text-[#ff204e]"
+                >
+                  Plans Sold
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 border-t border-gray-100">
@@ -165,6 +171,9 @@ const Dealerships = () => {
                       </td>
                       <td className="px-6 lg:px-4 xl:px-0 py-4">
                         {dealer?.totalPlans}
+                      </td>
+                      <td className="px-6 lg:px-4 xl:px-0 py-4">
+                        {dealer?.totalPlansSold}
                       </td>
                     </tr>
                   );
