@@ -8,13 +8,15 @@ const Success = ({ success, setSuccess }) => {
   }, []);
   return (
     <div
-      class="min-w-96 animate-bounce max-w-96 bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700"
+      class={`min-w-96 animate-bounce max-w-96 bg-white border border-gray-200 transition-all duration-300 rounded-xl fixed bottom-2 right-2 shadow-lg ${
+        success ? "translate-x-0" : "translate-x-96"
+      } `}
       role="alert"
     >
       <div class="flex p-4">
         <div class="flex-shrink-0">
           <svg
-            class="flex-shrink-0 size-4 text-teal-500 mt-0.5"
+            class="flex-shrink-0 size-4 text-green-500 mt-0.5"
             xmlns="http://www.w3.org/2000/svg"
             width="16"
             height="16"
@@ -25,7 +27,7 @@ const Success = ({ success, setSuccess }) => {
           </svg>
         </div>
         <div class="ms-3">
-          <p class="text-sm text-gray-700 dark:text-neutral-400">{success}</p>
+          <p class="text-sm text-gray-700 ">{success}</p>
         </div>
       </div>
     </div>

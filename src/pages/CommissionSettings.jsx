@@ -9,10 +9,11 @@ import BtnLoader from "../components/global/BtnLoader";
 import Error from "../components/global/Error";
 import { TbPercentage } from "react-icons/tb";
 import { FiDollarSign } from "react-icons/fi";
+import Success from "../components/global/Success";
 
 const CommissionSettings = () => {
   const [config, setConfig] = useState({});
-  const { baseUrl, navigateToLink, setError, error } =
+  const { baseUrl, navigateToLink, setError, error, success, setSuccess } =
     useContext(GlobalContext);
   const [configLoading, setConfigLoading] = useState(false);
   const [yearly, setYearly] = useState("");
@@ -92,8 +93,10 @@ const CommissionSettings = () => {
           (response) => {
             setLoading(false);
             setUpdate((prev) => !prev);
+            setSuccess("Commission updated successfully.");
           },
           (error) => {
+            setError(error?.response?.data?.message);
             setLoading(false);
             if (error?.response?.status == 401) {
               Cookies.remove("token");
@@ -119,6 +122,8 @@ const CommissionSettings = () => {
 
       {/* Form Error */}
       {error && <Error error={error} setError={setError} />}
+      {/* Form Success */}
+      {success && <Success success={success} setSuccess={setSuccess} />}
       <div className=" flex flex-col items-center h-full justify-center py-6 px-4">
         <div className=" w-full h-full flex justify-center items-center gap-4 ">
           <div className="border w-full lg:w-96 border-gray-300 bg-white rounded-md p-6  max-md:mx-auto">

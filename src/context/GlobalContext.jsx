@@ -17,6 +17,7 @@ export const GlobalContextProvider = ({ children }) => {
   };
 
   const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   return (
     <GlobalContext.Provider
@@ -27,6 +28,8 @@ export const GlobalContextProvider = ({ children }) => {
         baseUrl,
         error,
         setError,
+        success,
+        setSuccess,
       }}
     >
       <div>{children}</div>
