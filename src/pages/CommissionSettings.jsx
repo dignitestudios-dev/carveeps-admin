@@ -52,7 +52,7 @@ const CommissionSettings = () => {
   };
 
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState("fixed");
+  const [tab, setTab] = useState("percentage");
 
   const updateConfig = (e) => {
     e.preventDefault();
