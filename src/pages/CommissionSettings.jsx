@@ -234,7 +234,7 @@ const CommissionSettings = () => {
                   type="submit"
                   className="w-full shadow-xl py-2.5 px-4 text-sm font-semibold rounded-md text-white bg-[#ff204e] hover:opacity-90 focus:outline-none"
                 >
-                  {loading ? <BtnLoader /> : "Update Comission"}
+                  {loading ? <BtnLoader /> : "Update Commission"}
                 </button>
               </div>
             </form>
