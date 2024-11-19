@@ -5,7 +5,9 @@ import { NoData } from "../../assets/export";
 const RecentDealers = ({ dealerships }) => {
   const formatDateFromISOString = (isoString) => {
     const splittedString = String(isoString).split("T")[0];
-    const date = new Date(splittedString);
+    const [year, month, day] = splittedString.split("-");
+    const formattedString = `${month}-${day}-${year}`;
+    const date = new Date(formattedString);
     const options = { year: "numeric", month: "short", day: "2-digit" };
     return date.toLocaleDateString("en-US", options);
   };
