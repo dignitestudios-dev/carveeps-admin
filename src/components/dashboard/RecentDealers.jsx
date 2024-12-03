@@ -4,7 +4,7 @@ import { NoData } from "../../assets/export";
 
 const RecentDealers = ({ dealerships }) => {
   const formatDateFromISOString = (isoString) => {
-    if (isoString == null) return "";
+    if (isoString == null) return "N/A";
     const splittedString = String(isoString).split("T")[0];
     const [year, month, day] = splittedString.split("-");
     const formattedString = `${month}-${day}-${year}`;
