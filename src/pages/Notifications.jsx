@@ -48,6 +48,7 @@ const Notifications = () => {
       item?.description?.toLowerCase().includes(search.toLowerCase())
   );
   const formatDateFromISOString = (isoString) => {
+    if (isoString == null) return "";
     const splittedString = String(isoString).split("T")[0];
     const [year, month, day] = splittedString.split("-");
     const formattedString = `${month}-${day}-${year}`;
