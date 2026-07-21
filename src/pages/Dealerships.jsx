@@ -128,6 +128,12 @@ const Dealerships = () => {
                 >
                   Plans Sold
                 </th>
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4 xl:px-0 py-4 font-medium text-[#ff204e]"
+                >
+                  Commission
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 border-t border-gray-100">
@@ -174,6 +180,17 @@ const Dealerships = () => {
                       </td>
                       <td className="px-6 lg:px-4 xl:px-0 py-4">
                         {dealer?.totalPlansSold}
+                      </td>
+                      <td className="px-6 lg:px-4 xl:px-0 py-4">
+                        {dealer?.commissionSettings !== null || dealer?.freeCommissionSettings !== null ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-[#ff204e]">
+                            Custom
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-600">
+                            Global Default
+                          </span>
+                        )}
                       </td>
                     </tr>
                   );
