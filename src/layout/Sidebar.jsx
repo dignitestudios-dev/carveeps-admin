@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Logo } from "../assets/export";
 import SidebarLink from "./SidebarLink";
-import { LuUser } from "react-icons/lu";
+import { LuUser, LuShield } from "react-icons/lu";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { IoAnalyticsOutline } from "react-icons/io5";
@@ -48,6 +48,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           icon={<LuLayoutDashboard />}
         />
         <SidebarLink title={"Users"} link={"/users"} icon={<LuUser />} />
+        <SidebarLink title={"Roles"} link={"/roles"} icon={<LuShield />} />
         <SidebarLink
           title={"Dealerships"}
           link={"/dealerships"}

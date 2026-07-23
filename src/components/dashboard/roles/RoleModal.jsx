@@ -1,0 +1,190 @@
+import React, { useContext, useRef, useState, useEffect } from "react";
+import Error from "../../global/Error";
+import { GlobalContext } from "../../../context/GlobalContext";
+import axios from "axios";
+import Cookies from "js-cookie";
+import BtnLoader from "../../global/BtnLoader";
+
+const MODULES = [
+  "dashboard",
+  // "sales_team",
+  "reports",
+  "payment_gateway",
+  "subscriptions",
+  // "settings",
+  // "profile",
+  "support_tickets",
+  "notifications",
+];
+
+const MODULE_LABELS = {
+  dashboard: "Dashboard",
+  // sales_team: "Sales Team",
+  reports: "Reports",
+  payment_gateway: "Payment Gateway",
+  subscriptions: "Subscriptions",
+  // settings: "Settings",
+  // profile: "Profile",
+  support_tickets: "Support Tickets",
+  notifications: "Notifications",
+};
+
+const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
+  const roleModalRef = useRef();
+  const { navigateToLink, baseUrl } = useContext(GlobalContext);
+
+  const [roleName, setRoleName] = useState("");
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
+  const [formError, setFormError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (role) {
+      setRoleName(role.name || "");
+      setSelectedPermissions(role.permissions || []);
+    } else {
+      setRoleName("");
+      setSelectedPermissions([]);
+    }
+  }, [role, isOpen]);
+
+  const toggleModal = (e) => {
+    if (!roleModalRef.current.contains(e.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  const handlePermissionChange = (module) => {
+    setSelectedPermissions((prev) =>
+      prev.includes(module) ? prev.filter((p) => p !== module) : [...prev, module]
+    );
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!roleName.trim()) {
+      setFormError("Role name is required.");
+      setTimeout(() => setFormError(false), 3000);
+      return;
+    }
+
+    const token = Cookies.get("token");
+    if (!token) {
+      navigateToLink("/login", "Login");
+      return;
+    }
+
+    setLoading(true);
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const payload = {
+      name: roleName.trim(),
+      permissions: selectedPermissions,
+    };
+
+    const request = role
+      ? axios.put(`${baseUrl}/admin/roles/${role._id}`, payload, { headers })
+      : axios.post(`${baseUrl}/admin/roles`, payload, { headers });
+
+    request
+      .then((response) => {
+        setLoading(false);
+        setIsOpen(false);
+        updateData((prev) => !prev);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setFormError(error?.response?.data?.message || "Something went wrong.");
+        setTimeout(() => setFormError(false), 4000);
+      });
+  };
+
+  return (
+    <div
+      onClick={toggleModal}
+      className={`w-screen h-screen flex p-2 items-center justify-center fixed top-0 left-0 z-[1000] bg-black/40 backdrop-blur-xs transition-all duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+        }`}
+    >
+      {formError && <Error error={formError} setError={setFormError} />}
+
+      <div
+        ref={roleModalRef}
+        className="w-[32rem] max-w-full shadow-2xl rounded-3xl bg-white flex flex-col overflow-hidden transition-all duration-300"
+      >
+        <div className="w-full border-b border-gray-200 py-4 px-6 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-gray-800">
+            {role ? "Edit Role" : "Create New Role"}
+          </h1>
+          <button
+            onClick={() => setIsOpen(false)}
+            className="text-gray-400 hover:text-gray-600 transition-colors text-2xl font-light cursor-pointer"
+          >
+            &times;
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="w-full p-6 flex flex-col gap-6 overflow-y-auto max-h-[80vh]">
+          {/* Role Name Input */}
+          <div className="w-full flex flex-col gap-1">
+            <label className="text-sm font-semibold text-gray-700 ml-1">
+              Role Name
+            </label>
+            <input
+              type="text"
+              value={roleName}
+              onChange={(e) => setRoleName(e.target.value)}
+              placeholder="e.g. Sales Manager"
+              className="w-full h-12 rounded-full px-5 outline-none border border-gray-200 focus:border-[#ff204e] transition-colors text-sm"
+            />
+          </div>
+
+          {/* Module Permissions Grid */}
+          <div className="w-full flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 ml-1 mb-1">
+              Permissions
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {MODULES.map((module) => {
+                const isChecked = selectedPermissions.includes(module);
+                return (
+                  <div
+                    key={module}
+                    onClick={() => handlePermissionChange(module)}
+                    className={`flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer select-none ${isChecked
+                      ? "border-[#ff204e]/30 bg-[#ff204e]/[0.02]"
+                      : "border-gray-150 bg-gray-50 hover:bg-gray-100/70"
+                      }`}
+                  >
+                    <span className={`text-xs font-semibold ${isChecked ? "text-gray-800" : "text-gray-500"}`}>
+                      {MODULE_LABELS[module]}
+                    </span>
+                    <div className="relative inline-flex items-center pointer-events-none">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        readOnly
+                        className="sr-only peer"
+                      />
+                      <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#ff204e]"></div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <button
+            type="submit"
+            className="w-full h-12 mt-2 rounded-full flex justify-center items-center text-white font-medium bg-[#ff204e] hover:opacity-95 active:scale-95 transition-all duration-200 shadow-md cursor-pointer"
+          >
+            {loading ? <BtnLoader /> : role ? "Save Changes" : "Create Role"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default RoleModal;

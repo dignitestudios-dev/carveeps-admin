@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Dealerships from "./pages/Dealerships";
 import Notifications from "./pages/Notifications";
 import DealersProfile from "./pages/DealersProfile";
+import Roles from "./pages/Roles";
 
 import Transactions from "./pages/Transactions";
 import DealershipsOtherDetails from "./pages/DealershipsOtherDetails";
@@ -42,6 +43,7 @@ function App() {
         element={<GlobalLayout page={<Dashboard />} />}
       />
       <Route path="/users" element={<GlobalLayout page={<Users />} />} />
+      <Route path="/roles" element={<GlobalLayout page={<Roles />} />} />
       <Route
         path="/dealerships"
         element={<GlobalLayout page={<Dealerships />} />}
