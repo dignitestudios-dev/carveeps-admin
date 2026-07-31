@@ -10,6 +10,7 @@ import GlobalLayout from "./layout/GlobalLayout";
 import Users from "./pages/Users";
 import Dashboard from "./pages/Dashboard";
 import Dealerships from "./pages/Dealerships";
+import DealershipApplications from "./pages/DealershipApplications";
 import Notifications from "./pages/Notifications";
 import DealersProfile from "./pages/DealersProfile";
 import Roles from "./pages/Roles";
@@ -47,6 +48,10 @@ function App() {
       <Route
         path="/dealerships"
         element={<GlobalLayout page={<Dealerships />} />}
+      />
+      <Route
+        path="/dealership-applications"
+        element={<GlobalLayout page={<DealershipApplications />} />}
       />
       <Route
         path="/dealerships/:id"

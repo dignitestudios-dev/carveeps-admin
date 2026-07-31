@@ -1,9 +1,8 @@
 import React, { useRef } from "react";
 import { Logo } from "../assets/export";
 import SidebarLink from "./SidebarLink";
-import { LuUser, LuShield } from "react-icons/lu";
-import { IoNotificationsOutline } from "react-icons/io5";
-import { LuLayoutDashboard } from "react-icons/lu";
+import { IoNotificationsOutline, IoDocumentTextOutline } from "react-icons/io5";
+import { LuLayoutDashboard, LuShield, LuUser } from "react-icons/lu";
 import { IoAnalyticsOutline } from "react-icons/io5";
 import { TbBrandGoogleAnalytics } from "react-icons/tb";
 import { TbClover } from "react-icons/tb";
@@ -53,6 +52,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           title={"Dealerships"}
           link={"/dealerships"}
           icon={<IoAnalyticsOutline />}
+        />
+        <SidebarLink
+          title={"Dealership Applications"}
+          link={"/dealership-applications"}
+          icon={<IoDocumentTextOutline />}
         />
         <SidebarLink
           title={"Notifications"}
