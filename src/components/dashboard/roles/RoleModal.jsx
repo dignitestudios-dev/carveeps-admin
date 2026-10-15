@@ -7,34 +7,37 @@ import BtnLoader from "../../global/BtnLoader";
 
 const MODULES = [
   "dashboard",
-  // "sales_team",
-  "reports",
-  "payment_gateway",
-  "subscriptions",
-  // "settings",
-  // "profile",
-  "support_tickets",
+  "users",
+  "dealerships",
+  "tickets",
   "notifications",
+  "roles",
+  "subadmins",
+  "config",
 ];
 
 const MODULE_LABELS = {
   dashboard: "Dashboard",
-  // sales_team: "Sales Team",
+  users: "Users",
+  dealerships: "Dealerships",
+  tickets: "Support Tickets",
+  notifications: "Notifications",
+  roles: "Roles",
+  subadmins: "Subadmins",
+  config: "Config",
   reports: "Reports",
   payment_gateway: "Payment Gateway",
   subscriptions: "Subscriptions",
-  // settings: "Settings",
-  // profile: "Profile",
-  support_tickets: "Support Tickets",
-  notifications: "Notifications",
 };
 
 const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
   const roleModalRef = useRef();
-  const { navigateToLink, baseUrl } = useContext(GlobalContext);
+  const { navigateToLink, baseUrl, setSuccess, clearAuth } =
+    useContext(GlobalContext);
 
   const [roleName, setRoleName] = useState("");
   const [selectedPermissions, setSelectedPermissions] = useState([]);
+  const [isDefault, setIsDefault] = useState(false);
   const [formError, setFormError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -42,21 +45,25 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
     if (role) {
       setRoleName(role.name || "");
       setSelectedPermissions(role.permissions || []);
+      setIsDefault(Boolean(role.isDefault));
     } else {
       setRoleName("");
       setSelectedPermissions([]);
+      setIsDefault(false);
     }
   }, [role, isOpen]);
 
   const toggleModal = (e) => {
-    if (!roleModalRef.current.contains(e.target)) {
+    if (roleModalRef.current && !roleModalRef.current.contains(e.target)) {
       setIsOpen(false);
     }
   };
 
   const handlePermissionChange = (module) => {
     setSelectedPermissions((prev) =>
-      prev.includes(module) ? prev.filter((p) => p !== module) : [...prev, module]
+      prev.includes(module)
+        ? prev.filter((p) => p !== module)
+        : [...prev, module]
     );
   };
 
@@ -70,6 +77,7 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
 
     const token = Cookies.get("token");
     if (!token) {
+      clearAuth();
       navigateToLink("/login", "Login");
       return;
     }
@@ -81,6 +89,7 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
     const payload = {
       name: roleName.trim(),
       permissions: selectedPermissions,
+      isDefault: isDefault,
     };
 
     const request = role
@@ -91,6 +100,7 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
       .then((response) => {
         setLoading(false);
         setIsOpen(false);
+        setSuccess(role ? "Role updated successfully." : "Role created successfully.");
         updateData((prev) => !prev);
       })
       .catch((error) => {
@@ -103,8 +113,9 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
   return (
     <div
       onClick={toggleModal}
-      className={`w-screen h-screen flex p-2 items-center justify-center fixed top-0 left-0 z-[1000] bg-black/40 backdrop-blur-xs transition-all duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
-        }`}
+      className={`w-screen h-screen flex p-2 items-center justify-center fixed top-0 left-0 z-[1000] bg-black/40 backdrop-blur-xs transition-all duration-300 ${
+        isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+      }`}
     >
       {formError && <Error error={formError} setError={setFormError} />}
 
@@ -124,7 +135,10 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="w-full p-6 flex flex-col gap-6 overflow-y-auto max-h-[80vh]">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full p-6 flex flex-col gap-6 overflow-y-auto max-h-[80vh]"
+        >
           {/* Role Name Input */}
           <div className="w-full flex flex-col gap-1">
             <label className="text-sm font-semibold text-gray-700 ml-1">
@@ -151,13 +165,18 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
                   <div
                     key={module}
                     onClick={() => handlePermissionChange(module)}
-                    className={`flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer select-none ${isChecked
-                      ? "border-[#ff204e]/30 bg-[#ff204e]/[0.02]"
-                      : "border-gray-150 bg-gray-50 hover:bg-gray-100/70"
-                      }`}
+                    className={`flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer select-none ${
+                      isChecked
+                        ? "border-[#ff204e]/30 bg-[#ff204e]/[0.02]"
+                        : "border-gray-150 bg-gray-50 hover:bg-gray-100/70"
+                    }`}
                   >
-                    <span className={`text-xs font-semibold ${isChecked ? "text-gray-800" : "text-gray-500"}`}>
-                      {MODULE_LABELS[module]}
+                    <span
+                      className={`text-xs font-semibold ${
+                        isChecked ? "text-gray-800" : "text-gray-500"
+                      }`}
+                    >
+                      {MODULE_LABELS[module] || module}
                     </span>
                     <div className="relative inline-flex items-center pointer-events-none">
                       <input
@@ -173,6 +192,9 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
               })}
             </div>
           </div>
+
+          {/* Default Role Toggle */}
+         
 
           {/* Save Button */}
           <button

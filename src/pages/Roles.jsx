@@ -10,20 +10,24 @@ import Success from "../components/global/Success";
 
 const MODULE_LABELS = {
   dashboard: "Dashboard",
-  sales_team: "Sales Team",
+  users: "Users",
+  dealerships: "Dealerships",
+  tickets: "Support Tickets",
+  notifications: "Notifications",
+  roles: "Roles",
+  subadmins: "Subadmins",
+  config: "Config",
   reports: "Reports",
   payment_gateway: "Payment Gateway",
   subscriptions: "Subscriptions",
-  settings: "Settings",
-  profile: "Profile",
-  support_tickets: "Support Tickets",
-  notifications: "Notifications",
+  sales_team: "Sales Team",
 };
 
 const Roles = () => {
   const [roles, setRoles] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const { baseUrl, navigateToLink, error, setError, success, setSuccess } = useContext(GlobalContext);
+  const { baseUrl, navigateToLink, error, setError, success, setSuccess, clearAuth } =
+    useContext(GlobalContext);
   const [rolesLoading, setRolesLoading] = useState(false);
   const [update, setUpdate] = useState(false);
 
@@ -48,7 +52,7 @@ const Roles = () => {
         .catch((err) => {
           setRolesLoading(false);
           if (err?.response?.status === 401) {
-            Cookies.remove("token");
+            clearAuth();
             navigateToLink("/login");
           } else {
             setError(err?.response?.data?.message || "Failed to fetch roles.");
@@ -73,8 +77,13 @@ const Roles = () => {
     setIsModalOpen(true);
   };
 
-  const handleDeleteClick = (roleId) => {
-    if (!window.confirm("Are you sure you want to delete this role?")) {
+  const handleDeleteClick = (role) => {
+    if (role?.isDefault) {
+      setError("Cannot delete the default role.");
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to delete the role "${role?.name}"?`)) {
       return;
     }
 
@@ -84,8 +93,8 @@ const Roles = () => {
         Authorization: `Bearer ${token}`,
       };
       axios
-        .delete(`${baseUrl}/admin/roles/${roleId}`, { headers })
-        .then((response) => {
+        .delete(`${baseUrl}/admin/roles/${role?._id}`, { headers })
+        .then(() => {
           setSuccess("Role deleted successfully.");
           setUpdate((prev) => !prev);
         })
@@ -93,6 +102,7 @@ const Roles = () => {
           setError(err?.response?.data?.message || "Failed to delete role.");
         });
     } else {
+      clearAuth();
       navigateToLink("/login");
     }
   };
@@ -147,14 +157,23 @@ const Roles = () => {
                 <th scope="col" className="px-6 py-4 font-bold text-[#ff204e]">
                   Permissions
                 </th>
-                <th scope="col" className="px-6 py-4 font-bold text-[#ff204e] text-right">
+                <th scope="col" className="px-6 py-4 font-bold text-[#ff204e]">
+                  Default
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-4 font-bold text-[#ff204e] text-right"
+                >
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredData?.map((role) => (
-                <tr key={role?._id} className="hover:bg-gray-50/50 transition-colors">
+                <tr
+                  key={role?._id}
+                  className="hover:bg-gray-50/50 transition-colors"
+                >
                   <td className="px-6 py-4 font-semibold text-gray-800">
                     {role?.name}
                   </td>
@@ -169,9 +188,22 @@ const Roles = () => {
                         </span>
                       ))}
                       {(!role?.permissions || role.permissions.length === 0) && (
-                        <span className="text-gray-400 italic text-xs">No permissions assigned</span>
+                        <span className="text-gray-400 italic text-xs">
+                          No permissions assigned
+                        </span>
                       )}
                     </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    {role?.isDefault ? (
+                      <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-600 border border-green-100">
+                        Default
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center rounded-full bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-500 border border-gray-100">
+                        Custom
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
@@ -182,8 +214,18 @@ const Roles = () => {
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDeleteClick(role?._id)}
-                        className="px-3 py-1.5 rounded-lg border border-gray-200 hover:border-red-600 hover:bg-red-50 hover:text-red-600 text-gray-600 font-semibold transition-all text-xs cursor-pointer"
+                        onClick={() => handleDeleteClick(role)}
+                        disabled={role?.isDefault}
+                        title={
+                          role?.isDefault
+                            ? "Cannot delete the default role"
+                            : "Delete Role"
+                        }
+                        className={`px-3 py-1.5 rounded-lg border border-gray-200 font-semibold transition-all text-xs ${
+                          role?.isDefault
+                            ? "opacity-40 cursor-not-allowed text-gray-400"
+                            : "hover:border-red-600 hover:bg-red-50 hover:text-red-600 text-gray-600 cursor-pointer"
+                        }`}
                       >
                         Delete
                       </button>

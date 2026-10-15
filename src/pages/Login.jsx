@@ -12,7 +12,7 @@ import BtnLoader from "../components/global/BtnLoader";
 
 const Login = () => {
   const [showPass, setShowPass] = useState(false);
-  const { navigateToLink, baseUrl } = useContext(GlobalContext);
+  const { navigateToLink, baseUrl, setSubadminData } = useContext(GlobalContext);
 
   const [isPassVisible, setIsPassVisible] = useState(false);
   // Error States
@@ -57,16 +57,45 @@ const Login = () => {
         })
         .then(
           (response) => {
-            console.log(response);
             if (response?.data?.data?.token) {
               Cookies.set("token", response?.data?.data?.token, { expires: 7 });
-              navigateToLink("/dashboard", "Dashboard");
+
+              const subadminData = response?.data?.data?.subadmin;
+              if (subadminData) {
+                setSubadminData(subadminData);
+                const perms = subadminData.permissions || [];
+                if (perms.includes("dashboard") || perms.length === 0) {
+                  navigateToLink("/dashboard", "Dashboard");
+                } else {
+                  const routeMap = {
+                    dashboard: "/dashboard",
+                    users: "/users",
+                    roles: "/roles",
+                    subadmins: "/subadmins",
+                    dealerships: "/dealerships",
+                    tickets: "/tickets",
+                    notifications: "/notifications",
+                    config: "/commission-settings",
+                  };
+                  const firstPerm = perms.find((p) => routeMap[p]);
+                  if (firstPerm) {
+                    navigateToLink(routeMap[firstPerm]);
+                  } else {
+                    navigateToLink("/dashboard", "Dashboard");
+                  }
+                }
+              } else {
+                setSubadminData(null);
+                navigateToLink("/dashboard", "Dashboard");
+              }
             }
             setLoading(false);
           },
           (error) => {
             setLoading(false);
-            setFormError(error?.response?.data?.message);
+            setFormError(
+              error?.response?.data?.message || "Invalid credentials. Please try again."
+            );
           }
         );
     }

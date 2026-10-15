@@ -14,12 +14,13 @@ import DealershipApplications from "./pages/DealershipApplications";
 import Notifications from "./pages/Notifications";
 import DealersProfile from "./pages/DealersProfile";
 import Roles from "./pages/Roles";
-
+import Subadmins from "./pages/Subadmins";
 import Transactions from "./pages/Transactions";
 import DealershipsOtherDetails from "./pages/DealershipsOtherDetails";
 import Tickets from "./pages/Tickets";
 import UpdatePasswordInternal from "./pages/UpdatePasswordInternal";
 import CommissionSettings from "./pages/CommissionSettings";
+import PermissionGuard from "./components/global/PermissionGuard";
 
 function App() {
   return (
@@ -35,43 +36,156 @@ function App() {
       />
       <Route
         path="/commission-settings"
-        element={<GlobalLayout page={<CommissionSettings />} />}
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="config">
+                <CommissionSettings />
+              </PermissionGuard>
+            }
+          />
+        }
       />
 
       {/* Dashboard pages */}
       <Route
         path="/dashboard"
-        element={<GlobalLayout page={<Dashboard />} />}
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="dashboard">
+                <Dashboard />
+              </PermissionGuard>
+            }
+          />
+        }
       />
-      <Route path="/users" element={<GlobalLayout page={<Users />} />} />
-      <Route path="/roles" element={<GlobalLayout page={<Roles />} />} />
+      <Route
+        path="/users"
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="users">
+                <Users />
+              </PermissionGuard>
+            }
+          />
+        }
+      />
+      <Route
+        path="/roles"
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="roles">
+                <Roles />
+              </PermissionGuard>
+            }
+          />
+        }
+      />
+      <Route
+        path="/subadmins"
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="subadmins">
+                <Subadmins />
+              </PermissionGuard>
+            }
+          />
+        }
+      />
+      <Route
+        path="/subadmin"
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="subadmins">
+                <Subadmins />
+              </PermissionGuard>
+            }
+          />
+        }
+      />
       <Route
         path="/dealerships"
-        element={<GlobalLayout page={<Dealerships />} />}
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="dealerships">
+                <Dealerships />
+              </PermissionGuard>
+            }
+          />
+        }
       />
       <Route
         path="/dealership-applications"
-        element={<GlobalLayout page={<DealershipApplications />} />}
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="dealerships">
+                <DealershipApplications />
+              </PermissionGuard>
+            }
+          />
+        }
       />
       <Route
         path="/dealerships/:id"
-        element={<GlobalLayout page={<DealersProfile />} />}
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="dealerships">
+                <DealersProfile />
+              </PermissionGuard>
+            }
+          />
+        }
       />
       <Route
         path="/dealerships/revenue/:id"
-        element={<GlobalLayout page={<DealershipsOtherDetails />} />}
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="dealerships">
+                <DealershipsOtherDetails />
+              </PermissionGuard>
+            }
+          />
+        }
       />
 
       <Route
         path="/notifications"
-        element={<GlobalLayout page={<Notifications />} />}
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="notifications">
+                <Notifications />
+              </PermissionGuard>
+            }
+          />
+        }
       />
       <Route
         path="/transactions"
         element={<GlobalLayout page={<Transactions />} />}
       />
 
-      <Route path="/tickets" element={<GlobalLayout page={<Tickets />} />} />
+      <Route
+        path="/tickets"
+        element={
+          <GlobalLayout
+            page={
+              <PermissionGuard module="tickets">
+                <Tickets />
+              </PermissionGuard>
+            }
+          />
+        }
+      />
     </Routes>
   );
 }

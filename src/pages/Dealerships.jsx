@@ -11,7 +11,7 @@ const Dealerships = () => {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [dealer, setDealer] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const { baseUrl, navigateToLink } = useContext(GlobalContext);
+  const { baseUrl, navigateToLink, clearAuth } = useContext(GlobalContext);
   const [dealerLoading, setDealerLoading] = useState(false);
   const [update, setUpdate] = useState(false);
 
@@ -31,12 +31,13 @@ const Dealerships = () => {
         (error) => {
           setDealerLoading(false);
           if (error?.response?.status == 401) {
-            Cookies.remove("token");
+            clearAuth();
             navigateToLink("/login");
           }
         }
       );
     } else {
+      clearAuth();
       navigateToLink("/login");
     }
   };
@@ -67,21 +68,21 @@ const Dealerships = () => {
           />
         )}
       </div>
-      <div className="w-full   mt-2 h-auto flex justify-start items-center ">
+      <div className="w-full mt-2 h-auto flex justify-start items-center">
         <input
           type="text"
           id="name"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder="John Smith"
-          className=" block w-full rounded-l-full border border-gray-200 px-3 py-2 shadow-sm outline-none focus:border-[#ff204e] focus:ring focus:ring-red-200 focus:ring-opacity-50"
+          className="block w-full rounded-l-full border border-gray-200 px-3 py-2 shadow-sm outline-none focus:border-[#ff204e] focus:ring focus:ring-red-200 focus:ring-opacity-50"
         />
         <button className="active:scale-95 rounded-r-full border border-[#ff204e] bg-[#ff204e] px-8 py-2 font-medium text-white outline-none focus:ring focus:ring-red-200 hover:opacity-90">
           Search
         </button>
       </div>
 
-      <div className="w-full overflow-x-auto rounded-xl border border-gray-200 bg-white px-6 py-2 ">
+      <div className="w-full overflow-x-auto rounded-xl border border-gray-200 bg-white px-6 py-2">
         {dealerLoading ? (
           <Loader />
         ) : filteredData?.length < 1 ? (
@@ -89,9 +90,9 @@ const Dealerships = () => {
             <img src={NoData} className="" alt="" />
           </div>
         ) : (
-          <table className="w-full border-collapse  text-left text-sm text-gray-500">
-            <thead className="">
-              <tr className="">
+          <table className="w-full border-collapse text-left text-sm text-gray-500">
+            <thead>
+              <tr>
                 <th
                   scope="col"
                   className="px-6 lg:px-4 xl:px-0 py-4 font-medium text-[#ff204e]"
@@ -134,17 +135,23 @@ const Dealerships = () => {
                 >
                   Commission
                 </th>
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4 xl:px-0 py-4 font-medium text-[#ff204e] text-right"
+                >
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 border-t border-gray-100">
               {filteredData?.length > 0 &&
                 filteredData?.map((dealer) => {
                   return (
-                    <tr key={dealer?._id} className=" cursor-pointer">
-                      <th className="px-6  lg:px-4 xl:px-0 flex gap-3  py-4 font-normal text-gray-900">
+                    <tr key={dealer?._id} className="cursor-pointer">
+                      <th className="px-6 lg:px-4 xl:px-0 flex gap-3 py-4 font-normal text-gray-900">
                         <Link
                           to={`/dealerships/${dealer?._id}`}
-                          className="w-auto flex gap-2  justify-start items-center"
+                          className="w-auto flex gap-2 justify-start items-center"
                         >
                           <div className="relative h-10 w-10">
                             <img
@@ -191,6 +198,14 @@ const Dealerships = () => {
                             Global Default
                           </span>
                         )}
+                      </td>
+                      <td className="px-6 lg:px-4 xl:px-0 py-4 text-right">
+                        <Link
+                          to={`/dealerships/${dealer?._id}`}
+                          className="inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 hover:border-[#ff204e] hover:text-[#ff204e] text-gray-600 font-semibold transition-all text-xs cursor-pointer bg-white"
+                        >
+                          View Details
+                        </Link>
                       </td>
                     </tr>
                   );
