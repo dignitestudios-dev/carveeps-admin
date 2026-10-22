@@ -157,8 +157,9 @@ const Roles = () => {
                 <th scope="col" className="px-6 py-4 font-bold text-[#ff204e]">
                   Permissions
                 </th>
+               
                 <th scope="col" className="px-6 py-4 font-bold text-[#ff204e]">
-                  Default
+                  Type
                 </th>
                 <th
                   scope="col"
@@ -194,16 +195,9 @@ const Roles = () => {
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    {role?.isDefault ? (
-                      <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-xs font-semibold text-green-600 border border-green-100">
-                        Default
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-full bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-500 border border-gray-100">
-                        Custom
-                      </span>
-                    )}
+               
+                  <td className="px-6 py-4 font-semibold text-gray-800 capitalize">
+                    {role?.scope === "admin" ? "Sub-Admin" : "Dealership"}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
@@ -221,11 +215,10 @@ const Roles = () => {
                             ? "Cannot delete the default role"
                             : "Delete Role"
                         }
-                        className={`px-3 py-1.5 rounded-lg border border-gray-200 font-semibold transition-all text-xs ${
-                          role?.isDefault
+                        className={`px-3 py-1.5 rounded-lg border border-gray-200 font-semibold transition-all text-xs ${role?.isDefault
                             ? "opacity-40 cursor-not-allowed text-gray-400"
                             : "hover:border-red-600 hover:bg-red-50 hover:text-red-600 text-gray-600 cursor-pointer"
-                        }`}
+                          }`}
                       >
                         Delete
                       </button>

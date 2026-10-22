@@ -40,16 +40,19 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
   const [isDefault, setIsDefault] = useState(false);
   const [formError, setFormError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [type, setType] = useState("admin");
 
   useEffect(() => {
     if (role) {
       setRoleName(role.name || "");
       setSelectedPermissions(role.permissions || []);
       setIsDefault(Boolean(role.isDefault));
+      setType(role.type || "admin");
     } else {
       setRoleName("");
       setSelectedPermissions([]);
       setIsDefault(false);
+      setType("admin");
     }
   }, [role, isOpen]);
 
@@ -89,7 +92,9 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
     const payload = {
       name: roleName.trim(),
       permissions: selectedPermissions,
-      isDefault: isDefault,
+      // isDefault: isDefault,
+      scope: type,
+
     };
 
     const request = role
@@ -113,9 +118,8 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
   return (
     <div
       onClick={toggleModal}
-      className={`w-screen h-screen flex p-2 items-center justify-center fixed top-0 left-0 z-[1000] bg-black/40 backdrop-blur-xs transition-all duration-300 ${
-        isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
-      }`}
+      className={`w-screen h-screen flex p-2 items-center justify-center fixed top-0 left-0 z-[1000] bg-black/40 backdrop-blur-xs transition-all duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+        }`}
     >
       {formError && <Error error={formError} setError={setFormError} />}
 
@@ -152,7 +156,52 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
               className="w-full h-12 rounded-full px-5 outline-none border border-gray-200 focus:border-[#ff204e] transition-colors text-sm"
             />
           </div>
+          {/* Type Dropdown */}
+          <div className="w-full flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 ml-1">
+              Type
+            </label>
 
+            <div className="relative">
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                disabled={Boolean(role)}
+                className={`w-full h-12 appearance-none rounded-2xl border px-4 pr-12 text-sm font-medium outline-none transition-all duration-200 ${role
+                  ? "cursor-not-allowed border-gray-200 bg-gray-50 text-gray-400"
+                  : "cursor-pointer border-gray-200 bg-white text-gray-700 hover:border-gray-300 focus:border-[#ff204e] focus:ring-4 focus:ring-[#ff204e]/10"
+                  }`}
+              >
+                <option value="admin">Sub-admin</option>
+                <option value="dealership">Dealership</option>
+              </select>
+
+              <div
+                className={`pointer-events-none absolute inset-y-0 right-4 flex items-center ${role ? "text-gray-400" : "text-gray-500"
+                  }`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
+            </div>
+
+            <p className="ml-1 text-xs text-gray-400">
+              {role
+                ? "Role type cannot be changed after creation."
+                : "Choose whether this role belongs to a sub-admin or dealership."}
+            </p>
+          </div>
           {/* Module Permissions Grid */}
           <div className="w-full flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700 ml-1 mb-1">
@@ -165,16 +214,14 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
                   <div
                     key={module}
                     onClick={() => handlePermissionChange(module)}
-                    className={`flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer select-none ${
-                      isChecked
-                        ? "border-[#ff204e]/30 bg-[#ff204e]/[0.02]"
-                        : "border-gray-150 bg-gray-50 hover:bg-gray-100/70"
-                    }`}
+                    className={`flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer select-none ${isChecked
+                      ? "border-[#ff204e]/30 bg-[#ff204e]/[0.02]"
+                      : "border-gray-150 bg-gray-50 hover:bg-gray-100/70"
+                      }`}
                   >
                     <span
-                      className={`text-xs font-semibold ${
-                        isChecked ? "text-gray-800" : "text-gray-500"
-                      }`}
+                      className={`text-xs font-semibold ${isChecked ? "text-gray-800" : "text-gray-500"
+                        }`}
                     >
                       {MODULE_LABELS[module] || module}
                     </span>
@@ -194,7 +241,7 @@ const RoleModal = ({ isOpen, setIsOpen, role, updateData }) => {
           </div>
 
           {/* Default Role Toggle */}
-         
+
 
           {/* Save Button */}
           <button
