@@ -30,7 +30,9 @@ const Roles = () => {
     useContext(GlobalContext);
   const [rolesLoading, setRolesLoading] = useState(false);
   const [update, setUpdate] = useState(false);
-
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [roleToDelete, setRoleToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   // Modal Control
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRole, setEditingRole] = useState(null);
@@ -83,27 +85,38 @@ const Roles = () => {
       return;
     }
 
-    if (!window.confirm(`Are you sure you want to delete the role "${role?.name}"?`)) {
+    setRoleToDelete(role);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!roleToDelete || deleteLoading) return;
+
+    const token = Cookies.get("token");
+
+    if (!token) {
+      clearAuth();
+      navigateToLink("/login");
       return;
     }
 
-    const token = Cookies.get("token");
-    if (token) {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-      axios
-        .delete(`${baseUrl}/admin/roles/${role?._id}`, { headers })
-        .then(() => {
-          setSuccess("Role deleted successfully.");
-          setUpdate((prev) => !prev);
-        })
-        .catch((err) => {
-          setError(err?.response?.data?.message || "Failed to delete role.");
-        });
-    } else {
-      clearAuth();
-      navigateToLink("/login");
+    setDeleteLoading(true);
+
+    try {
+      await axios.delete(`${baseUrl}/admin/roles/${roleToDelete._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setDeleteModalOpen(false);
+      setRoleToDelete(null);
+      setSuccess("Role deleted successfully.");
+      setUpdate((prev) => !prev);
+    } catch (err) {
+      setError(err?.response?.data?.message || "Failed to delete role.");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -157,7 +170,7 @@ const Roles = () => {
                 <th scope="col" className="px-6 py-4 font-bold text-[#ff204e]">
                   Permissions
                 </th>
-               
+
                 <th scope="col" className="px-6 py-4 font-bold text-[#ff204e]">
                   Type
                 </th>
@@ -195,7 +208,7 @@ const Roles = () => {
                       )}
                     </div>
                   </td>
-               
+
                   <td className="px-6 py-4 font-semibold text-gray-800 capitalize">
                     {role?.scope === "admin" ? "Sub-Admin" : "Dealership"}
                   </td>
@@ -216,8 +229,8 @@ const Roles = () => {
                             : "Delete Role"
                         }
                         className={`px-3 py-1.5 rounded-lg border border-gray-200 font-semibold transition-all text-xs ${role?.isDefault
-                            ? "opacity-40 cursor-not-allowed text-gray-400"
-                            : "hover:border-red-600 hover:bg-red-50 hover:text-red-600 text-gray-600 cursor-pointer"
+                          ? "opacity-40 cursor-not-allowed text-gray-400"
+                          : "hover:border-red-600 hover:bg-red-50 hover:text-red-600 text-gray-600 cursor-pointer"
                           }`}
                       >
                         Delete
@@ -238,6 +251,80 @@ const Roles = () => {
           role={editingRole}
           updateData={setUpdate}
         />
+      )}
+      {deleteModalOpen && (
+        <div
+          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !deleteLoading) {
+              setDeleteModalOpen(false);
+              setRoleToDelete(null);
+            }
+          }}
+        >
+          <div className="w-full max-w-md overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-2xl animate-[fadeIn_0.2s_ease-out]">
+            <div className="flex flex-col items-center px-7 pt-8 pb-6 text-center">
+              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 ring-8 ring-red-50/50">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8 text-[#ff204e]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.8}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M4 7h16M10 7V4h4v3"
+                  />
+                </svg>
+              </div>
+
+              <h2 className="text-xl font-bold text-gray-900">
+                Delete Role?
+              </h2>
+
+              <p className="mt-3 max-w-sm text-sm leading-6 text-gray-500">
+                Are you sure you want to delete{" "}
+                <span className="font-semibold text-gray-800">
+                  "{roleToDelete?.name}"
+                </span>
+                ? This action cannot be undone.
+              </p>
+            </div>
+
+            <div className="flex gap-3 border-t border-gray-100 bg-gray-50/70 px-6 py-5">
+              <button
+                type="button"
+                disabled={deleteLoading}
+                onClick={() => {
+                  setDeleteModalOpen(false);
+                  setRoleToDelete(null);
+                }}
+                className="h-11 flex-1 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-gray-700 transition-all hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                disabled={deleteLoading}
+                onClick={confirmDelete}
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#ff204e] text-sm font-semibold text-white shadow-md shadow-red-200/50 transition-all hover:bg-[#e61943] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {deleteLoading ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Yes, Delete"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
